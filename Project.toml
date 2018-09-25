@@ -1,0 +1,7 @@
+name = "DataIterators"
+uuid = "ae242b42-c0ce-11e8-1b6e-9d809ff25af9"
+authors = ["pevnak <pevnak@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+MLDataPattern = "9920b226-0b2a-5f5f-9153-9aa70a013f8b"
