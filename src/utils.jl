@@ -1,3 +1,9 @@
+catobs(::Nothing, x) = x
+catobs(x, ::Nothing) = x
+catobs(x::AbstractArray{T,N}...) where {N,T}= cat(x..., dims = N)
+catobs(x...) = cat(x...)
+
+
 """
   (y, yy) = splitdata(x, n)
 
