@@ -1,6 +1,19 @@
 using Test
-using DataIterators: FileIterator
+using DataIterators: FileIterator, InfiniteFileIterator
 using Mill: ArrayNode
+
+function collectnl(iter, n = typemax(Int))
+	next = iterate(iter)
+	items = []
+	j = 0;
+	while next !== nothing && j < n
+	    (i, state) = next
+	    push!(items, i)
+	    next = iterate(iter, state)
+	    j += 1
+	end
+	items
+end
 
 @testset "testing FileIterator with Arrays" begin
 	d = Dict("a" => [1 2 3 4 5], 
@@ -22,3 +35,13 @@ end
 	@test all([x.data for x in FileIterator(loadfun, ["a", "b"], 2)] .== [[1 2], [3 4], [5 6], reshape([7],1 ,1)])
 	@test all([x.data for x in FileIterator(loadfun, ["a", "b", "c"], 20)] .== [[1 2 3 4 5 6 7 8]])
 end
+
+@testset "testing InfiniteFileIterator with Arrays" begin
+	d = Dict("a" => [1 2 3 4 5], 
+		"b" => [6 7], 
+		"c" => reshape([8], (1,1)))
+	loadfun(f) = d[f]
+	@test all(collectnl(InfiniteFileIterator(loadfun, ["a", "b", "c"], 2), 8) .== [[1 2], [3 4], [5 6], [7 8], [1 2], [3 4], [5 6], [7 8]])
+end
+
+ 

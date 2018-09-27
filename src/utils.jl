@@ -28,6 +28,6 @@ function sampledata(x, n)
   elseif nobs(x) < n
     return(x)
   else
-    getobs(x, sample(1:nobs(x), n))
+    getobs(x, sample(1:nobs(x), n, replace = false))
   end
 end
