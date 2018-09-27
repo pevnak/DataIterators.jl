@@ -59,4 +59,4 @@ collect(FileIterator(loadfun, ["a", "b", "c"], 2))
 Converts iterator to function call, hiding the state. The approach is not type safe!
 
 
-* See unit-test for examples *
+** See unit-test for examples **
