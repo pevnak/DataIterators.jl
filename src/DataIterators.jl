@@ -7,5 +7,5 @@ include("inffileiterator.jl")
 include("iterator2fun.jl")
 include("circularbuffer.jl")
 
-export FileIterator, InfiniteFileIterator, Iterator2Fun
+export FileIterator, InfiniteFileIterator, Iterator2Fun, CircularBuffer
 end # module

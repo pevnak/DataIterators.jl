@@ -60,7 +60,7 @@ end
 end
 
 
-@testset "testing InfiniteFileIterator with Arrays" begin
+@testset "testing CircularBuffer with Arrays" begin
 	d = Dict("a" => [1 2 3 4 5], 
 		"b" => [6 7], 
 		"c" => reshape([8], (1,1)))
