@@ -4,6 +4,13 @@ This small package is a work on progress on providing an iterator over data spre
 It is inteded to facilitate training with minibatches, such that the iterator would provide minibatches of 
 constant size hiding the fact that data are spread.
 
+Contains:
+* FileIterator
+* InfiniteFileIterator
+* Iterator2Fun
+* CircularBuffer
+
+### FileIterator
 The best is to show a simplified example, in which the files system is simulated by a dictionary 
 ```
 d = Dict("a" => [1 2 3 4 5], 
@@ -40,3 +47,13 @@ collect(FileIterator(loadfun, ["a", "b", "c"], 2))
  [9 10]
  [11]
  ```
+ 
+ ### InfiniteFileIterator
+ Is similar in the spirit to FileIterator except that it provides infinite number of mini-batches. If the data are small and they are loaded in the first round, then the iterator keeps them and sample from them without repetition.
+
+
+### CircularBuffer
+`CircularBuffer(iterator, k)` does what its name suggests. Implements cache providing each sample at most k-times. Note that the implementation is not entirely correct at beggining and end.
+
+### Iterator2Fun
+Converts iterator to function call, hiding the state. The approach is not type safe!
