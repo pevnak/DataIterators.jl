@@ -58,6 +58,15 @@ end
 	loadfun(f) = d[f]
 	@test all(callnl(Iterator2Fun(InfiniteFileIterator(loadfun, ["b", "c"], 2)), 8) .== [[6 7], [8 6], [7 8], [6 7], [8 6], [7 8], [6 7], [8 6]])
 end
- 
 
- nothing
+
+@testset "testing InfiniteFileIterator with Arrays" begin
+	d = Dict("a" => [1 2 3 4 5], 
+		"b" => [6 7], 
+		"c" => reshape([8], (1,1)))
+	loadfun(f) = d[f]
+	@test all(collectnl(CircularBuffer(FileIterator(loadfun, ["b", "c"], 2), 2)) .== [ [6 7], reshape([8], 1, 1), [6 7], reshape([8], 1, 1), reshape([8], 1, 1)])
+end
+
+ 
+nothing
