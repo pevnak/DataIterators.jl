@@ -1,5 +1,4 @@
-using Test
-using DataIterators: FileIterator, InfiniteFileIterator
+using Test, DataIterators
 using Mill: ArrayNode
 
 function collectnl(iter, n = typemax(Int))
@@ -14,6 +13,8 @@ function collectnl(iter, n = typemax(Int))
 	end
 	items
 end
+
+callnl(iter, n) = [iter() for _ in 1:n]
 
 @testset "testing FileIterator with Arrays" begin
 	d = Dict("a" => [1 2 3 4 5], 
@@ -42,6 +43,21 @@ end
 		"c" => reshape([8], (1,1)))
 	loadfun(f) = d[f]
 	@test all(collectnl(InfiniteFileIterator(loadfun, ["a", "b", "c"], 2), 8) .== [[1 2], [3 4], [5 6], [7 8], [1 2], [3 4], [5 6], [7 8]])
+	@test all(map(x -> sort(x, dims = 2),collectnl(InfiniteFileIterator(loadfun, ["b"], 2), 3)) .== [[6 7], [6 7], [6 7]])
+	@test all(map(x -> sort(x, dims = 2),collectnl(InfiniteFileIterator(loadfun, ["b"], 3), 3)) .== [[6 7], [6 7], [6 7]])
+	@test all(map(x -> sort(x, dims = 2),collectnl(InfiniteFileIterator(loadfun, ["a", "b"], 7), 2)) .== [[1 2 3 4 5 6 7], [1 2 3 4 5 6 7]])
+	@test all(map(x -> sort(x, dims = 2),collectnl(InfiniteFileIterator(loadfun, ["a", "b"], 10), 2)) .== [[1 2 3 4 5 6 7], [1 2 3 4 5 6 7]])
+	@test all(collectnl(InfiniteFileIterator(loadfun, ["a", "b"], 5), 2) .== [[1 2 3 4 5], [6 7 1 2 3]])
 end
 
+
+@testset "testing Iterator2fun with Arrays" begin
+	d = Dict("a" => [1 2 3 4 5], 
+		"b" => [6 7], 
+		"c" => reshape([8], (1,1)))
+	loadfun(f) = d[f]
+	@test all(callnl(Iterator2Fun(InfiniteFileIterator(loadfun, ["b", "c"], 2)), 8) .== [[6 7], [8 6], [7 8], [6 7], [8 6], [7 8], [6 7], [8 6]])
+end
  
+
+ nothing
