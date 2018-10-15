@@ -47,3 +47,5 @@ function loadnextbatch_i(loadfun, files, n, x, i)
   end 
   x, i
 end
+
+Base.IteratorSize(s::InfiniteFileIterator) = Base.SizeUnknown()
