@@ -58,5 +58,22 @@ collect(FileIterator(loadfun, ["a", "b", "c"], 2))
 ### Iterator2Fun
 Converts iterator to function call, hiding the state. The approach is not type safe!
 
+### DistributedIterator 
+runs iterators on workers (remote processes) without moving states.
+A simple example from taken from tests is below
+```
+using Distributed, Test
+addprocs(2)
+@everywhere begin
+ using DataIterators;
+ d = Dict("a" => 10*myid().+[1 2 3 4 5],
+         "b" => 10*myid().+[6 7]);
+ loadfun(f) = d[f]
+end 
 
+ffl = DistributedIterator(fill(FileIterator(loadfun,["a","b"],3), 2), [2,3])
+@testset "remote iterator" begin
+	@test all(collect(ffl) .== [[21 22 23], [31 32 33], [24 25 26], [34 35 36], reshape([27], 1, 1), reshape([37],1 ,1), nothing])
+end
+```
 ** See unit-test for examples **
