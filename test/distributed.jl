@@ -7,4 +7,4 @@
 end 
 
 ffl = DistributedIterator(fill(FileIterator(loadfun,["a","b"],3), nworkers()), workers())
-collect(ffl)
+println(collect(ffl))

@@ -3,54 +3,53 @@ struct DistributedIterator{A}
   workers::Vector{Int}
 end
 
-itstates = Dict{Symbol,Any}();
+distributed_states = Dict{Symbol,Any}();
+distributed_iterators = Dict{Symbol,Any}();
+inititerator(iterator, id) = distributed_iterators[id] = iterator;
 
-function next(ifun, id)
-	r = if haskey(itstates, id)
-		iterate(ifun, itstates[id])
-	else 
-		iterate(ifun)
+function next(id)
+	if !haskey(distributed_iterators, id)
+		@warn "iterator not initialized"
+		return(nothing)
 	end
+
+	iterator = distributed_iterators[id]
+	r = haskey(distributed_states, id) ? iterate(iterator, distributed_states[id]) : iterate(iterator)
 	if r == nothing 
-		delete!(itstates, id)
+		delete!(distributed_states, id)
+		delete!(distributed_iterators, id)
 		return(nothing)
 	end
 	v, s = r
-	itstates[id] = s 
+	distributed_states[id] = s 
 	v
 end
 
 function Base.iterate(ffl::DistributedIterator)
 	id = Symbol(randstring(10))
-	r = [remotecall(DataIterators.next, wi, ffl.ifuns[i], id) for (i, wi) in enumerate(ffl.workers)]
+	[remotecall_fetch(DataIterators.inititerator, wi, ffl.ifuns[i], id) for (i, wi) in enumerate(ffl.workers)]
+	r = [remotecall(DataIterators.next, i, id) for i in ffl.workers]
 	Base.iterate(ffl, (1, r, id))
 end
 
 function Base.iterate(ffl::DistributedIterator, s)
 	i, r, id = s
 	isempty(r) && return(nothing)
-	v, i, r = fetchresult(i, r)
-	if i > 0
-		r[i] = remotecall(DataIterators.next, r[i].where, ffl.ifuns[i], id)
-	end
-	@show v
-	println()
+	v, i, r = fetchresult(i, r, id)
 	return(v, (i, r, id))
 end
 
 cyclicinc(i, n) = i == n ? 1 : i + 1
 
-function fetchresult(i, r)
+function fetchresult(i, r, id)
 	while !isempty(r)
 		i = findready(i, r)
-		@show r
 		v = fetch(r[i])
-		@show r
-		@show v
 		if v == nothing
 			r = r[setdiff(1:length(r), i)]
 			i = i > length(r) ? length(r) : i
 		else 
+			r[i] = remotecall(DataIterators.next, r[i].where, id)
 			return(v, cyclicinc(i, length(r)), r)
 		end
 	end
