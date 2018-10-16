@@ -68,5 +68,6 @@ end
 	@test all(collectnl(CircularBuffer(FileIterator(loadfun, ["b", "c"], 2), 2)) .== [ [6 7], reshape([8], 1, 1), [6 7], reshape([8], 1, 1), reshape([8], 1, 1)])
 end
 
+include("distributed.jl")
  
 nothing
