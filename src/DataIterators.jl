@@ -1,5 +1,5 @@
 module DataIterators
-using MLDataPattern, Distributed, Random
+using MLDataPattern, Distributed, Random, Mill
 using StatsBase: sample
 include("utils.jl")
 include("fileiterator.jl")

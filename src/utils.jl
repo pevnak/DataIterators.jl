@@ -1,8 +1,5 @@
-catobs(::Nothing, x) = x
-catobs(x, ::Nothing) = x
-catobs(x::AbstractArray{T,N}...) where {N,T}= cat(x..., dims = N)
-catobs(x...) = cat(x...)
-
+Mill.catobs(::Nothing, x) = x
+Mill.catobs(x, ::Nothing) = x
 
 """
   (y, yy) = splitdata(x, n)
@@ -12,7 +9,9 @@ catobs(x...) = cat(x...)
 """
 function splitdata(x, n)
   j = min(nobs(x), n)
-  return(getobs(x,1:j), getobs(x, j+1:nobs(x)))
+  idx = 1:j
+  cidx = j+1:nobs(x)
+  return(getobs(x,idx), getobs(x, cidx))
 end
 
 splitdata(::Nothing, n) = (nothing, nothing)
