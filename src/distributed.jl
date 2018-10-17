@@ -98,6 +98,7 @@ cyclicinc(i, n) = i == n ? 1 : i + 1
 function fetchresult(i, r)
 	while !isempty(r)
 		i = findready(i, r)
+		# @show (i, isready(r[i]), r[i])
 		v = fetch(r[i])
 		if v == nothing
 			r = r[setdiff(1:length(r), i)]
@@ -115,9 +116,9 @@ end
 	find an index of first finished iterator in `r` (vector of futures) starting at `i`th position
 """
 function findready(i, r)
-	status = isready.(r)
+	# @show (i, isready.(r))
 	j = i
-	while status[j] == true
+	while isready(r[j]) == false
 		j = cyclicinc(j, length(r))
 		j == i && break;
 	end
