@@ -17,6 +17,7 @@ struct InfiniteFileIterator{A,B}
 end
 
 function Base.iterate(ffl::InfiniteFileIterator)
+  isempty(ffl.files) && return(nothing)
   x, i = loadnextbatch_i(ffl.loadfun, ffl.files, ffl.nobs , nothing, 1)
   i = (i == 1) ? 0 : i
   iterate(ffl, (x, i))
@@ -40,7 +41,13 @@ end
 function loadnextbatch_i(loadfun, files, n, x, i)
   istart = i
   while (x == nothing) || (nobs(x) < n)
-    x = catobs(x,loadfun(files[i]))
+    try 
+      xx =  loadfun(files[i])
+      x = catobs(x, xx)
+    catch me 
+      @warn "error while loading $(files[i])"
+      println(me)
+    end
     i += 1
     i = i > length(files) ? 1 : i
     i == istart && return (x, i)

@@ -16,6 +16,7 @@ end
 
 function Base.iterate(ffl::FileIterator, state = (nothing, 1))
   x, i = loadnextbatch(ffl.loadfun, ffl.files, ffl.nobs, state...)[1:2]
+  x == nothing && return(nothing)
   nobs(x) == 0 && return(nothing)
   x, xx = splitdata(x, ffl.nobs)
   x, (xx, i)
@@ -30,7 +31,14 @@ end
 """
 function loadnextbatch(loadfun, files, n, x, i)
   while (i <=length(files)) && ( x == nothing || nobs(x) < n)
-    x = catobs(x, loadfun(files[i]))
+    try 
+      xx = loadfun(files[i])
+      xx == nothing && return(x, i)
+      x = catobs(x, xx)
+    catch me 
+      @warn "error while loading $(files[i])"
+      println(me)
+    end
     i += 1
   end 
   x, i

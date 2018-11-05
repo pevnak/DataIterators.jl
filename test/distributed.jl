@@ -9,5 +9,5 @@ end
 
 ffl = DistributedIterator(fill(FileIterator(loadfun,["a","b"],3), 2), [2,3])
 @testset "remote iterator" begin
-	@test all(collect(ffl) .== [[21 22 23], [31 32 33], [24 25 26], [34 35 36], reshape([27], 1, 1), reshape([37],1 ,1), nothing])
+	@test all(collect(ffl) .== [[31 32 33], [21 22 23], [34 35 36], [24 25 26], reshape([37],1 ,1), reshape([27], 1, 1), nothing])
 end

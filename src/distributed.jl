@@ -118,7 +118,7 @@ end
 function findready(i, r)
 	# @show (i, isready.(r))
 	j = i
-	while isready(r[j]) == false
+	while !isready(r[j])
 		j = cyclicinc(j, length(r))
 		j == i && break;
 	end
