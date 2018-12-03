@@ -22,9 +22,7 @@ splitdata(::Nothing, n) = (nothing, nothing)
   return random subset of `x` with `n` samples. If `x` has less than `n` samples, all samples are returned (shallow copy).
 """
 function sampledata(x, n)
-  if nobs(x) == 0
-    return(nothing)
-  elseif nobs(x) < n
+  if nobs(x) < n
     return(x)
   else
     getobs(x, sample(1:nobs(x), n, replace = false))
