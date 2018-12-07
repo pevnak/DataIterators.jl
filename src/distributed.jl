@@ -27,6 +27,7 @@ function Base.iterate(ffl::DistributedIterator, s)
 	i, r, id = s
 	isempty(r) && return(nothing)
 	v, i, r = fetchresult(i, r)
+	v == nothing && return(nothing)
 	if i > 0
 		r[i] = remotecall(DataIterators.next, r[i].where, id)
 		i = cyclicinc(i, length(r))
@@ -98,7 +99,6 @@ cyclicinc(i, n) = i == n ? 1 : i + 1
 function fetchresult(i, r)
 	while !isempty(r)
 		i = findready(i, r)
-		# @show (i, isready(r[i]), r[i])
 		v = fetch(r[i])
 		if v == nothing
 			r = r[setdiff(1:length(r), i)]
