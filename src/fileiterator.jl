@@ -34,7 +34,7 @@ function loadnextbatch(loadfun, files, n, x, i)
     try 
       xx = loadfun(files[i])
       xx == nothing && return(x, i)
-      x = catobs(x, xx)
+      x = filteredcat(x, xx)
     catch me 
       @warn "error while loading $(files[i])"
       println(me)

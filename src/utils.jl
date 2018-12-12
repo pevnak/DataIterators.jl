@@ -1,5 +1,7 @@
-Mill.catobs(::Nothing, x) = x
-Mill.catobs(x, ::Nothing) = x
+filteredcat(::Nothing, x) = x
+filteredcat(x, ::Nothing) = x
+filteredcat(x::T, y::T) where {T} = cat(x, y; dims = ndims(x))
+filteredcat(::Nothing, ::Nothing) = nothing
 
 """
   (y, yy) = splitdata(x, n)

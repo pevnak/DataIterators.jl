@@ -1,6 +1,5 @@
 module DataIterators
-using MLDataPattern, Distributed, Random, Mill
-using Mill: catobs
+using MLDataPattern, Distributed, Random
 using StatsBase: sample
 
 include("utils.jl")
