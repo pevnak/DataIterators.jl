@@ -31,14 +31,13 @@ end
 """
 function loadnextbatch(loadfun, files, n, x, i)
   while (i <=length(files)) && ( x == nothing || nobs(x) < n)
-    # try 
+    try 
       xx = loadfun(files[i])
-      # xx == nothing && return(x, i)
       x = filteredcat(x, xx)
-    # catch me 
-      # @warn "error while loading $(files[i])"
-      # println(me)
-    # end
+    catch me 
+      @warn "error while loading $(files[i])"
+      println(me)
+    end
     i += 1
   end 
   x, i
