@@ -25,10 +25,7 @@ loadfun(f) = d[f]
 The iterator `FileIterator(loadfun, files, bs))` uses loads data using load function `loadfun` from files and 
 outputs batches of size `bs`. At the moment it is assumed that files is a structure supporting linear indexing 
 (list of vectors). Furthermore, function `nobs` from MLDataPattern package is used to calculate number of samples in minibatch. 
-The packege defines its own function `catobs` to concatenates observations. For arrays, it concatenates them along the last 
-dimensions and the library contains a fallback `catobs(x...) = cat(x...)`. If you need custom handling for your type, just 
-overload it as
-```DataIterators.catobs(x::T...) where {T} = mycat(x...)```.
+To concatenate data from two files, the package calls `cat(x,y,dims = :)`.
 
 The complete above example is as follows
 ```
