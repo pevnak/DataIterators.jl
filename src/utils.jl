@@ -30,3 +30,20 @@ function sampledata(x, n)
     getobs(x, sample(1:nobs(x), n, replace = false))
   end
 end
+
+
+"""
+  benchmarkit(iterator, max_steps = 1000; verbose: = true)
+
+  time per iteration
+"""
+function benchmarkit(iterator, max_steps = 1000;verbose = true)
+  start_time = time()
+  i = 0 
+  for ds in iterator
+    i += 1
+    verbose && println("time = $((time() - start_time)/ i)")
+    i > max_steps && break
+  end
+  (start_time - time()) / i
+end

@@ -10,4 +10,5 @@ include("circularbuffer.jl")
 include("distributed.jl")
 
 export FileIterator, InfiniteFileIterator, Iterator2Fun, CircularBuffer, DistributedIterator
+export benchmarkit
 end # module
